@@ -10,6 +10,7 @@ if sys.platform == "linux" or sys.platform == "linux2":
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
+import csv
 from ryu.controller import ofp_event
 from ryu.controller.handler import MAIN_DISPATCHER, DEAD_DISPATCHER, set_ev_cls
 from ryu.lib import hub
@@ -23,7 +24,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from tensorflow.keras.models import load_model
 import requests
 from web3 import Web3
-
+import subprocess
 import socket, struct
 
 
@@ -31,6 +32,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
 
     def __init__(self, *args, **kwargs):
         super(SmartDDoSDefenseController, self).__init__(*args, **kwargs)
+        self.discord_webhook = "https://discord.com/api/webhooks/1364948568464425100/AQpFaMmuUcGr41Z8SbECe5mO7QGaFzQW0IkdDATBLGhiqnzt8eDq2v-QVoOFm6D-SEjX"
         self.datapaths = {}
         self.monitor_thread = hub.spawn(self._monitor)
         
@@ -183,7 +185,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
             X = df.iloc[:, :].values.astype('float64')
 
             if X.shape[0] == 0:
-                self.logger.error("📛 No valid rows in prediction file after preprocessing.")
+                #self.logger.error("📛 No valid rows in prediction file after preprocessing.")
                 self.logger.info("------------------------------------------------------------------------------")
                 return
 
@@ -199,7 +201,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
                     ddos_traffic += 1
 
             if (legitimate_traffic / len(preds) * 100) > 80:
-                self.logger.info("legitimate traffic ...")
+                self.logger.info("Normal traffic ...")
                 self.logger.info("------------------------------------------------------------------------------")
             else:
                 for i, pred in enumerate(preds):
@@ -209,36 +211,38 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
                     timestamp = int(df.iloc[i, 0])
 
                     if pred == 1:
-                        self.logger.info("🚨 DDoS Attempt Detected from IP: %s", ip)
+                        self.logger.info("[1] 🚨 DDoS Attempt Detected from IP: %s", ip)
 
                         # Step 1: Apply Rate Limiting
                         self.apply_rate_limit(ip, dpid)
-                        self.logger.info("🔒 Rate Limit Applied – Traffic Throttled")
+                        #self.logger.info("🔒 Rate Limit Applied – Traffic Throttled")
 
                         # Step 2: Deep Learning Verification
                         deep_features = X[i].reshape(1, -1)
                         deep_pred = self.deep_model.predict(deep_features)
                         if deep_pred[0][0] > 0.5:
-                            self.logger.info("🧠 Deep Learning Model: Attack Confirmed")
+                            self.logger.info("[3] 🧠 Deep Learning Model: Attack Confirmed")
 
                             # Step 3: Threat Intelligence
                             if self.check_threat_intel(ip):
-                                self.logger.info("🛡 Threat Intelligence: IP found in blacklist (known attacker)")
+                                self.logger.info("[4] 🛡 Threat Intelligence: IP found in blacklist (known attacker)")
                             else:
-                                self.logger.info("🛡 Threat Intelligence: IP not found in blacklist (new attacker – added to local blacklist)")
+                                self.logger.info("[4] 🛡 Threat Intelligence: IP not found in blacklist (new attacker – added to local blacklist)")
 
                             # Step 4: Blockchain Logging
                             try:
                                 self.log_to_blockchain(ip, timestamp)
                             except:
-                                self.logger.warning("🔗 Blockchain Log: Failed")
+                                self.logger.warning("[5] 🔗 Blockchain Log: Failed")
 
                             # Step 5: Apply SYN Proxy
                             self.apply_syn_proxy(ip, dpid)
-                            self.logger.info("🧱 SYN Proxy Activated – SYN Flood Blocked")
+                            self.logger.info("    🧱 SYN Proxy Activated – SYN Flood Blocked")
 
                             # Final Result
-                            self.logger.info("✅ RESULT: DDoS attack successfully detected and mitigated – no service disruption occurred.")
+                            self.send_discord_alert("DDoS detected",ip)
+                            subprocess.run(["python3", "broker.py"])
+                            self.logger.info("[8] ✅ Message Successfully Sent To Mobile App.")
                             self.logger.info("----------------------------------------------------------------------------------")
                     break
         except Exception as e:
@@ -374,7 +378,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
 
 
     def log_to_blockchain(self, ip, timestamp):
-        self.logger.info("🚀 Trying to log to blockchain...") 
+        #self.logger.info("🚀 Trying to log to blockchain...")
         try:
             description = f"DDoS from {ip} at {timestamp}"
 
@@ -386,13 +390,13 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
 
             if tx_receipt.status == 1:
                 tx_hash_hex = tx_hash.hex()
-                self.logger.info("⛓ Logged to blockchain ✅ TxHash: %s", tx_hash_hex)
-                self.logger.info("🔗 Blockchain Log: Event recorded successfully")
+                self.logger.info("[5] ⛓ Logged to blockchain ✅ TxHash: %s", tx_hash_hex)
+                self.logger.info("    🔗 Blockchain Log: Event recorded successfully")
 
                 # Step 3: Save to local log file
                 self.save_ddos_log(ip, timestamp, tx_hash_hex)
             else:
-                self.logger.warning("⛓ Blockchain log failed ❌ (transaction reverted)")
+                self.logger.warning("[5] ⛓ Blockchain log failed ❌ (transaction reverted)")
 
         except Exception as e:
             self.logger.error("Blockchain error: %s", str(e))
@@ -408,7 +412,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
                 writer.writerow(["IP Address", "Timestamp", "Transaction Hash"])
             writer.writerow([ip, timestamp, tx_hash])
         
-        self.logger.info("📝 Local log updated with IP %s", ip)
+        self.logger.info("    📝 Local log updated with IP %s", ip)
 
 
     def apply_syn_proxy(self, ip, dpid):
@@ -433,10 +437,10 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
         with open("syn_attacks.log", "a") as log_file:
             log_file.write(f"[{datetime.now()}] SYN Flood Attempt from {ip} on switch {dpid} (Count: {attack_count})\n")
 
-        self.logger.info("🛡 SYN Proxy applied to %s (attempt #%d)", ip, attack_count)
+        self.logger.info("[6] 🛡 SYN Proxy applied to %s (attempt /#%d)", ip, attack_count)
 
         if attack_count >= 3:
-            self.logger.warning("🚨 Multiple SYN Flood attempts from %s (Total: %d)", ip, attack_count)
+            self.logger.warning("    🚨 Multiple SYN Flood attempts from %s (Total: %d)", ip, attack_count)
 
             # Blockchain Logging
             timestamp = int(datetime.now().timestamp())
@@ -451,7 +455,7 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
             mod_block_all = parser.OFPFlowMod(datapath=datapath, priority=110, match=match_block_all, instructions=inst_block_all)
             datapath.send_msg(mod_block_all)
 
-            self.logger.info("🔒 All traffic blocked from %s due to repeated SYN attacks.", ip)
+            self.logger.info("    🔒 All traffic blocked from %s due to repeated SYN attacks.", ip)
 
             # Save to local blacklist
             with open("local_blacklist.txt", "a") as f:
@@ -469,7 +473,31 @@ class SmartDDoSDefenseController(switch.SimpleSwitch13):
             inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
             mod = parser.OFPFlowMod(datapath=datapath, priority=100, match=match, instructions=inst)
             datapath.send_msg(mod)
-            self.logger.info("🔒 Rate Limit (Drop) applied to %s", ip)
+            self.logger.info("[2] 🔒 Rate Limit (Drop) applied to %s – Traffic Throttled", ip)
+
+
+    def send_discord_alert(self, attack_type, ip_address=None, port=None):
+        webhook_url = self.discord_webhook  # استخدم المتغير اللي عرفناه
+        message = f"🚨 Security Alert: {attack_type} detected!\n"
+        
+        if ip_address:
+            message += f"Source IP: {ip_address}\n"
+        if port:
+            message += f"Affected Port: {port}\n"
+        
+        message += "Action Taken: Attack mitigation applied.\n"
+        message += f"Time: {self.get_current_time()}"
+        
+        data = {"content": message}
+        response = requests.post(webhook_url, json=data)
+        if response.status_code == 204:
+            print("[7] ✅ Alert sent to Discord successfully!")
+        else:
+            print("❌ Failed to send alert.")
+
+    def get_current_time(self):
+        from datetime import datetime
+        return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
 
    
