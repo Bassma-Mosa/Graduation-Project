@@ -166,13 +166,4 @@ This project demonstrates practical experience in:
 * Real-time System Design
 * Secure System Architecture
 
----
 
-## 🙏 Acknowledgements
-
-Special thanks to:
-
-* Prof. Dr. Mai Ramadan
-* Eng. Hadeel Farag
-
-for their guidance and support throughout this project.
