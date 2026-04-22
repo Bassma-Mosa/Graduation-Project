@@ -178,8 +178,4 @@ flutter run
 | SYN Proxy Defense | Validated against SYN Flood attacks |
 | Blockchain Integrity | Verified tamper-proof logging |
 | Mobile App Performance | Optimized with Flutter profiling tools |
----
 
-## 🙏 Acknowledgements
-
-We would like to express our heartfelt gratitude to **Prof. Dr. Mai Ramadan** for her patience, unwavering guidance, and continuous support throughout the semester. Special thanks to **Eng. Hadeel Farag** for her consistent follow-up and constructive feedback. We also thank everyone who supported and encouraged us throughout this journey.
