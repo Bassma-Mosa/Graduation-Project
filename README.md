@@ -1,88 +1,104 @@
-# 🛡️ Intelligent Security System for DDoS Attack Detection and Mitigation using SDN
+# 🛡️ Intelligent SDN-Based DDoS Detection & Mitigation System
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
-  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Blockchain-121D33?style=for-the-badge&logo=bitcoin&logoColor=white"/>
-</p>
-
-> 🎓 Graduation Project — B.Sc. in Information Technology  
-> Faculty of Computer and Information, **Kafrelsheikh University** — 2024/2025
+🎓 Graduation Project — B.Sc. in Information Technology
+Faculty of Computer and Information, Kafrelsheikh University — 2024/2025
 
 ---
 
-## 📖 Abstract
+## 🚀 Overview
 
-Smart home environments face growing cybersecurity threats, particularly **Distributed Denial of Service (DDoS)** attacks targeting resource-constrained IoT devices. This project proposes a comprehensive, multi-layered security framework that leverages **Software-Defined Networking (SDN)** for centralized control, real-time monitoring, and dynamic policy enforcement.
+A real-time cybersecurity system designed to detect and mitigate DDoS attacks in smart home and IoT environments using Software-Defined Networking (SDN), Deep Learning, and Blockchain.
 
-The system integrates:
-- **Threat Intelligence** for proactive attack detection
-- **Deep Learning** (RNN & LSTM) for behavioral anomaly analysis
-- **Blockchain** for decentralized authentication, data integrity, and tamper-proof event logging
-- **Mobile Application** (Flutter) for real-time alerts and remote control
-
-Results confirm that this hybrid architecture enhances protection against modern attack vectors while preserving privacy and availability.
+The system combines centralized network control with intelligent traffic analysis to automatically identify malicious behavior and respond instantly.
 
 ---
 
-## ✨ Key Features
+## ⚠️ Problem Statement
 
-| Feature | Description |
-|---|---|
-| 🔍 **DDoS Detection** | Real-time identification of DDoS and SYN Flood attacks using deep learning |
-| ⚙️ **SDN Control** | Centralized network management via Ryu Controller + Mininet emulation |
-| 🧠 **Deep Learning** | RNN & LSTM models for behavioral anomaly detection |
-| 🔗 **Blockchain Security** | Decentralized authentication, smart contracts, and audit logging |
-| 📱 **Mobile App** | Flutter app with Firebase backend for real-time alerts and remote control |
-| 🔒 **Encryption** | Secure IoT device communication using MQTT with encryption |
-| 🛡️ **Rate Limiting** | Automated countermeasures including rate limiting and flow isolation |
+Smart home and IoT environments are highly vulnerable to DDoS attacks due to:
+
+* Limited device resources
+* Lack of centralized security control
+* Increasing exposure to internet-based threats
+
+---
+
+## 💡 Solution
+
+This project introduces a multi-layered defense system that:
+
+* Monitors network traffic in real-time using SDN
+* Detects anomalies using Deep Learning (RNN / LSTM)
+* Automatically mitigates attacks via flow control and rate limiting
+* Sends real-time alerts to users and administrators
+* Logs security events securely using Blockchain
 
 ---
 
 ## 🏗️ System Architecture
 
-The system is built on three integrated layers:
-
 ```
 ┌─────────────────────────────────────────┐
-│          Mobile Application (Flutter)    │  ← User Interface & Real-time Alerts
+│       Mobile Application (Flutter)       │
+│    Real-time Alerts & User Interface     │
 ├─────────────────────────────────────────┤
-│    SDN Control Layer (Ryu Controller)    │  ← Policy Enforcement & Monitoring
-│    + Deep Learning (RNN / LSTM)          │
-│    + Blockchain Authentication           │
+│ SDN Controller (Ryu) + Detection Engine  │
+│  - Deep Learning (RNN / LSTM)            │
+│  - Threat Intelligence                  │
+│  - Blockchain Integration               │
 ├─────────────────────────────────────────┤
-│   Infrastructure Layer (Mininet / IoT)   │  ← Smart Home Devices & Network
+│  Infrastructure Layer (Mininet / IoT)   │
+│   Smart Devices & Network Simulation     │
 └─────────────────────────────────────────┘
 ```
 
-**Communication:** Devices communicate via **MQTT** with encryption. The SDN controller dynamically enforces security policies, while all events are logged immutably to the Blockchain. Real-time alerts are pushed to the Flutter mobile app via **Firebase**.
+---
+
+## 🔄 System Workflow
+
+Traffic → SDN Controller → Feature Extraction → ML Model → Detection → Mitigation → Alerts → Blockchain Logging
 
 ---
 
-## 🛠️ Technologies Used
+## ✨ Key Features
 
-### Networking & Security
-- **SDN (Software-Defined Networking)** — Separates control and data planes for dynamic management
-- **Ryu SDN Controller** — Python-based controller for flow management and attack mitigation
-- **Mininet** — Network emulation for testing and simulation
-- **MQTT** — Lightweight IoT messaging protocol with encryption
+* 🔍 Real-time DDoS & SYN Flood detection
+* ⚙️ SDN-based centralized traffic control (Ryu + Mininet)
+* 🧠 Deep Learning models (RNN / LSTM) for anomaly detection
+* 🛡️ Automated mitigation (Rate Limiting & Flow Rules)
+* 📱 Mobile App (Flutter + Firebase) for live alerts
+* 💬 Discord alerts for security administrators
+* 🔗 Blockchain for tamper-proof logging and authentication
+* 🔒 Secure communication via MQTT with encryption
 
-### Machine Learning & AI
-- **Deep Learning (RNN / LSTM)** — Sequence-based anomaly detection for network traffic
-- **Threat Intelligence** — Proactive attack pattern identification
-- **Feature Extraction** — Traffic-based feature engineering for anomaly detection
+---
 
-### Security & Blockchain
-- **Blockchain** — Tamper-proof event logging, decentralized authentication, smart contracts
-- **SYN Proxy** — Defense mechanism against SYN Flood attacks
-- **Encryption Algorithms** — Securing IoT device communication
+## 🛠️ Tech Stack
 
-### Mobile & Backend
-- **Flutter** — Cross-platform mobile application
-- **Firebase (Firestore)** — Real-time database and cloud backend
-- **Firebase Authentication** — Secure user access
+### 🔐 Networking & Security
+
+* SDN (Software-Defined Networking)
+* Ryu Controller
+* Mininet
+* MQTT (Encrypted Communication)
+
+### 🧠 AI & Detection
+
+* Deep Learning (RNN / LSTM)
+* Feature Engineering & Traffic Analysis
+* Threat Intelligence Integration
+
+### 🔗 Blockchain
+
+* Smart Contracts
+* Event Logging (Tamper-proof)
+* Web3 Integration
+
+### 📱 Application Layer
+
+* Flutter Mobile App
+* Firebase (Firestore + Authentication)
+* Discord Webhooks
 
 ---
 
@@ -90,92 +106,73 @@ The system is built on three integrated layers:
 
 ```
 ├── sdn/
-│   ├── ryu_controller/        # Ryu SDN controller scripts
-│   ├── mininet_topology/      # Mininet network topology definitions
-│   └── rate_limiting/         # DDoS mitigation and rate limiting rules
 ├── ml_models/
-│   ├── rnn_model/             # Recurrent Neural Network model
-│   ├── lstm_model/            # LSTM anomaly detection model
-│   └── feature_extraction/    # Traffic feature engineering
 ├── blockchain/
-│   ├── smart_contracts/       # Smart contracts for authentication
-│   └── event_logging/         # Tamper-proof audit logging
 ├── mobile_app/
-│   ├── lib/                   # Flutter application source code
-│   ├── android/               # Android build files
-│   └── ios/                   # iOS build files
 ├── mqtt/
-│   └── broker_config/         # MQTT broker and encryption config
 └── docs/
-    └── Final_Project_2025.pdf # Full project report
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🎥 Demo
 
-### Prerequisites
+👉 Watch the system in action:
 
-- Python 3.8+
-- Mininet
-- Ryu SDN Framework
-- Flutter SDK
-- Firebase project
+* Attack simulation
+* Real-time detection
+* Automated mitigation
+* Mobile + Discord alerts
 
-### Installation
+[Add Video Link Here]
+
+---
+
+## ⚙️ How to Run
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/Bassma-Mosa/Graduation-Project.git
 cd Graduation-Project
 
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Install Ryu
-pip install ryu
-
-# Set up Mininet (Linux only)
-sudo apt-get install mininet
-```
-
-### Running the SDN Controller
-
-```bash
-# Start Ryu controller with DDoS mitigation app
+# Run SDN controller
 ryu-manager sdn/ryu_controller/ddos_mitigation.py
 
-# In a new terminal, start the Mininet topology
+# Start Mininet topology
 sudo python3 sdn/mininet_topology/smart_home_topo.py
-```
-
-### Running the ML Detection Model
-
-```bash
-# Train the LSTM model
-python3 ml_models/lstm_model/train.py
-
-# Run inference / real-time detection
-python3 ml_models/lstm_model/detect.py
-```
-
-### Running the Mobile App
-
-```bash
-cd mobile_app
-flutter pub get
-flutter run
 ```
 
 ---
 
-## 📊 Results & Evaluation
+## 📊 Results
 
-| Metric | Result |
-|---|---|
-| Attack Detection Accuracy | Evaluated across multiple ML models |
-| Rate Limiting Effectiveness | Tested against DDoS traffic simulations |
-| SYN Proxy Defense | Validated against SYN Flood attacks |
-| Blockchain Integrity | Verified tamper-proof logging |
-| Mobile App Performance | Optimized with Flutter profiling tools |
+* High detection accuracy using deep learning models
+* Real-time mitigation using SDN flow control
+* Effective defense against SYN Flood and DDoS attacks
+* Secure and immutable logging using Blockchain
 
+---
+
+## 🎯 Project Impact
+
+This project demonstrates practical experience in:
+
+* Cybersecurity (DDoS Detection & Mitigation)
+* SDN Network Control
+* AI in Security Systems
+* Real-time System Design
+* Secure System Architecture
+
+---
+
+## 🙏 Acknowledgements
+
+Special thanks to:
+
+* Prof. Dr. Mai Ramadan
+* Eng. Hadeel Farag
+
+for their guidance and support throughout this project.
